@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pane2" prefHeight="978.0" prefWidth="1915.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.BackeryManagement.controller.SignupFormController">
+   <children>
+      <AnchorPane prefHeight="1915.0" prefWidth="957.5" style="-fx-background-color: #644C4C;">
+         <children>
+            <AnchorPane layoutX="88.0" layoutY="168.0" prefHeight="710.0" prefWidth="736.0" style="-fx-background-color: white; -fx-border-color: black;">
+               <children>
+                  <JFXButton layoutX="307.0" layoutY="512.0" onAction="#signupbtnOnAction" prefHeight="43.0" prefWidth="89.0" style="-fx-background-color: black;" text="SignUp" textFill="WHITE" />
+                  <Label layoutX="194.0" layoutY="73.0" text="Sign in to continue  to our application" textFill="#221f1f">
+                     <font>
+                        <Font name="Calibri Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblUserName" layoutX="194.0" layoutY="216.0" />
+                  <Label fx:id="lblPassWord" layoutX="194.0" layoutY="288.0" />
+                  <Label fx:id="lblmail" layoutX="194.0" layoutY="355.0" />
+                  <Label fx:id="lblNic" layoutX="194.0" layoutY="408.0" prefHeight="21.0" prefWidth="230.0" />
+                  <JFXTextField fx:id="txtUid" layoutX="194.0" layoutY="177.0" onKeyReleased="#txtuIdKeyTypedOnAction" prefHeight="31.0" prefWidth="333.0" promptText="User Id" />
+                  <Label fx:id="lbluid" layoutX="194.0" layoutY="156.0" prefHeight="21.0" prefWidth="244.0" />
+                  <JFXTextField fx:id="txtusename" layoutX="194.0" layoutY="243.0" onKeyReleased="#txtUserNameKeyTypedOnAction" prefHeight="31.0" prefWidth="333.0" promptText="User Name" />
+                  <JFXTextField fx:id="txtpassword" layoutX="194.0" layoutY="309.0" onKeyReleased="#txtPassWordKeyTypedOnAction" prefHeight="31.0" prefWidth="333.0" promptText="Pass Word" />
+                  <JFXTextField fx:id="txtemail" layoutX="194.0" layoutY="376.0" onKeyReleased="#txtEmailKeyTypedOnAction" prefHeight="31.0" prefWidth="333.0" promptText="Email" />
+                  <JFXTextField fx:id="txtnic" layoutX="194.0" layoutY="438.0" onKeyReleased="#txtNicKeyTypedOnAction" prefHeight="31.0" prefWidth="333.0" promptText="NIC" />
+               </children>
+            </AnchorPane>
+            <Label layoutX="316.0" layoutY="62.0" text="SignUp Form" textFill="WHITE">
+               <font>
+                  <Font name="Calibri Bold" size="48.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <ImageView fitHeight="817.0" fitWidth="817.0" layoutX="1035.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../assest/picture/brown.jpeg" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="516.0" fitWidth="625.0" layoutX="1129.0" layoutY="307.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../assest/picture/sign%20up.jpg" />
+         </image>
+      </ImageView>
+      <AnchorPane layoutX="958.0" prefHeight="105.0" prefWidth="970.0" style="-fx-background-color: #543030;" />
+   </children>
+</AnchorPane>

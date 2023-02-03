@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pane" prefHeight="991.0" prefWidth="1419.0" style="-fx-background-color: Gray;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.BackeryManagement.controller.EmployeeManageFormController">
+   <children>
+      <Label layoutX="525.0" layoutY="43.0" text="Employee Manage Form">
+         <font>
+            <Font name="Calibri" size="48.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="86.0" fitWidth="169.0" layoutX="1358.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../assest/logo/companylogo.png" />
+         </image>
+      </ImageView>
+      <Button layoutX="58.0" layoutY="37.0" mnemonicParsing="false" onAction="#backbtnOnAction" prefHeight="49.0" prefWidth="105.0" style="-fx-background-color: #442222;" text="Back" textFill="WHITE" />
+      <TableView fx:id="tblemployee" layoutY="683.0" prefHeight="320.0" prefWidth="1447.0">
+         <columns>
+            <TableColumn fx:id="colNic" prefWidth="223.0" text="NIC" />
+            <TableColumn fx:id="colName" prefWidth="243.0" text="Name" />
+            <TableColumn fx:id="colAddress" prefWidth="252.0" text="Address" />
+            <TableColumn fx:id="collicenceNo" prefWidth="211.0" text="Licence No" />
+            <TableColumn fx:id="colContact" prefWidth="202.0" text="Contact" />
+            <TableColumn fx:id="colPosition" prefWidth="158.0" text="Position" />
+            <TableColumn fx:id="colSalary" prefWidth="157.0" text="Salary" />
+         </columns>
+      </TableView>
+      <JFXTextField fx:id="txtnic" layoutX="578.0" layoutY="139.0" onAction="#nicOnAction" onKeyReleased="#txtnicKeyTypedOnAction" prefHeight="31.0" prefWidth="296.0" promptText="NIC" unFocusColor="BLACK">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </JFXTextField>
+      <JFXTextField fx:id="txtname" layoutX="576.0" layoutY="214.0" onKeyReleased="#txtnameKeyTypedOnAction" prefHeight="31.0" prefWidth="296.0" promptText="Name" unFocusColor="BLACK">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </JFXTextField>
+      <JFXTextField fx:id="txtlicenceno" layoutX="576.0" layoutY="379.0" onKeyReleased="#txtlicenceNoKeyTypedOnAction" prefHeight="31.0" prefWidth="296.0" promptText="Vehicle licence Number" unFocusColor="BLACK">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </JFXTextField>
+      <JFXTextField fx:id="txtcontact" layoutX="576.0" layoutY="448.0" onKeyReleased="#txtcontactKeyTypedOnAction" prefHeight="31.0" prefWidth="296.0" promptText="Contact" unFocusColor="BLACK">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </JFXTextField>
+      <JFXTextField fx:id="txtPosition" layoutX="576.0" layoutY="515.0" onKeyReleased="#txtpositionKeyTypedOnAction" prefHeight="31.0" prefWidth="296.0" promptText="Position" unFocusColor="BLACK">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </JFXTextField>
+      <JFXTextField fx:id="txtaddress" layoutX="576.0" layoutY="301.0" onKeyReleased="#txtaddressKeyTypedOnAction" prefHeight="31.0" prefWidth="296.0" promptText="Address" unFocusColor="BLACK">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </JFXTextField>
+      <Button layoutX="1071.0" layoutY="273.0" mnemonicParsing="false" onAction="#deletebtnOnAction" prefHeight="47.0" prefWidth="159.0" style="-fx-background-color: #E81616;" text="Delete Employees" textFill="#fff4f4" />
+      <Button layoutX="1071.0" layoutY="186.0" mnemonicParsing="false" onAction="#addbtnOnAction" prefHeight="47.0" prefWidth="159.0" style="-fx-background-color: black;" text="Add Employees" textFill="#fff4f4" />
+      <Button layoutX="1071.0" layoutY="364.0" mnemonicParsing="false" onAction="#updatebtnOnAction" prefHeight="47.0" prefWidth="159.0" style="-fx-background-color: black;" text="Update Employees" textFill="#fff4f4" />
+      <JFXTextField fx:id="txtSalary" layoutX="576.0" layoutY="586.0" onKeyReleased="#txtbasicSalaryKeyTypedOnAction" prefHeight="31.0" prefWidth="296.0" promptText="Basic Salary" unFocusColor="BLACK">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </JFXTextField>
+      <JFXTextField fx:id="txtSearch" layoutX="984.0" layoutY="625.0" prefHeight="31.0" prefWidth="296.0" promptText="Search" unFocusColor="BLACK">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </JFXTextField>
+      <Label fx:id="lblNic" layoutX="578.0" layoutY="112.0" prefHeight="21.0" prefWidth="261.0" />
+      <Label fx:id="lblName" layoutX="578.0" layoutY="199.0" prefHeight="21.0" prefWidth="224.0" />
+      <Label fx:id="lblAddress" layoutX="578.0" layoutY="286.0" prefHeight="21.0" prefWidth="261.0" />
+      <Label fx:id="lblVlicenceNo" layoutX="578.0" layoutY="354.0" prefHeight="21.0" prefWidth="271.0" />
+      <Label fx:id="lblContact" layoutX="578.0" layoutY="427.0" prefHeight="21.0" prefWidth="285.0" />
+      <Label fx:id="lblPosition" layoutX="578.0" layoutY="502.0" prefHeight="21.0" prefWidth="285.0" />
+      <Label fx:id="lblSalary" layoutX="576.0" layoutY="565.0" prefHeight="21.0" prefWidth="253.0" />
+   </children>
+</AnchorPane>

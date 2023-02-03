@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane fx:id="pane" prefHeight="991.0" prefWidth="1419.0" style="-fx-background-color: gray;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.BackeryManagement.controller.SummaryFormController">
+   <children>
+      <Label layoutX="710.0" layoutY="39.0" prefHeight="55.0" prefWidth="202.0" text="summary">
+         <font>
+            <Font name="Calibri Light" size="48.0" />
+         </font>
+      </Label>
+      <AnchorPane layoutX="112.0" layoutY="165.0" prefHeight="350.0" prefWidth="427.0" style="-fx-background-color: black; -fx-background-radius: 25;">
+         <children>
+            <Label layoutX="92.0" layoutY="14.0" prefHeight="55.0" prefWidth="277.0" text="Total Employees" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="36.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutY="200.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../assest/picture/employee.jpg" />
+               </image>
+            </ImageView>
+            <Label layoutX="168.0" layoutY="69.0" prefHeight="55.0" prefWidth="74.0" text="20" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="36.0" />
+               </font>
+            </Label>
+            <Label layoutX="157.0" layoutY="155.0" prefHeight="55.0" prefWidth="113.0" text="Manager" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="320.0" layoutY="155.0" prefHeight="55.0" prefWidth="74.0" text="01" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="157.0" layoutY="194.0" prefHeight="55.0" prefWidth="147.0" text="Head Backer" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="157.0" layoutY="234.0" prefHeight="55.0" prefWidth="113.0" text="Backers " textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="159.0" layoutY="275.0" prefHeight="55.0" prefWidth="167.0" text="Sales Persons" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="320.0" layoutY="194.0" prefHeight="55.0" prefWidth="74.0" text="02" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="320.0" layoutY="234.0" prefHeight="55.0" prefWidth="74.0" text="05" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="320.0" layoutY="275.0" prefHeight="55.0" prefWidth="74.0" text="12" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="24.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="624.0" layoutY="165.0" prefHeight="350.0" prefWidth="295.0" style="-fx-background-color: black; -fx-background-radius: 25;">
+         <children>
+            <Label layoutX="39.0" layoutY="29.0" prefHeight="55.0" prefWidth="217.0" text="Total Products" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="36.0" />
+               </font>
+            </Label>
+            <Label layoutX="121.0" layoutY="84.0" prefHeight="55.0" prefWidth="66.0" text="15" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="36.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="133.0" fitWidth="121.0" layoutY="229.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../assest/picture/product%20image.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="1022.0" layoutY="162.0" prefHeight="350.0" prefWidth="295.0" style="-fx-background-color: black; -fx-background-radius: 25;">
+         <children>
+            <Label layoutX="7.0" layoutY="22.0" prefHeight="55.0" prefWidth="307.0" text="Material Stock Items" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="36.0" />
+               </font>
+            </Label>
+            <Label layoutX="124.0" layoutY="77.0" prefHeight="55.0" prefWidth="74.0" text="08" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="36.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="81.0" fitWidth="150.0" layoutY="284.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../assest/picture/material%20stock.jpg" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="112.0" layoutY="586.0" prefHeight="350.0" prefWidth="295.0" style="-fx-background-color: black; -fx-background-radius: 25;">
+         <children>
+            <Label layoutX="34.0" layoutY="23.0" prefHeight="55.0" prefWidth="240.0" text="Total Vehicles" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="36.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="95.0" fitWidth="167.0" layoutY="262.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../assest/picture/vehicle%20image.jpg" />
+               </image>
+            </ImageView>
+            <Label layoutX="111.0" layoutY="72.0" prefHeight="55.0" prefWidth="74.0" text="12" textFill="#c3c3c3">
+               <font>
+                  <Font name="Calibri Light" size="36.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <ImageView fitHeight="357.0" fitWidth="577.0" layoutX="607.0" layoutY="586.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../assest/picture/chart.png" />
+         </image>
+      </ImageView>
+      <Button layoutX="1230.0" layoutY="36.0" mnemonicParsing="false" onAction="#LogOutbtnOnAction" prefHeight="55.0" prefWidth="147.0" style="-fx-background-color: white;" text="Log Out">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

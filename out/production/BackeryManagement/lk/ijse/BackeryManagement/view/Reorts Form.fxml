@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pane" prefHeight="991.0" prefWidth="1420.0" style="-fx-background-color: gray;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.BackeryManagement.controller.ReortsFormController">
+   <children>
+      <AnchorPane layoutX="824.0" layoutY="155.0" prefHeight="349.0" prefWidth="419.0" style="-fx-background-color: black; -fx-background-radius: 35;">
+         <children>
+            <JFXButton layoutX="110.0" layoutY="254.0" onAction="#paymentreporbtnOnAction" prefHeight="49.0" prefWidth="171.0" style="-fx-background-color: white;" text="Payment Reports" />
+            <ImageView fitHeight="179.0" fitWidth="205.0" layoutX="106.0" layoutY="48.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../assest/logo/payment.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="184.0" layoutY="155.0" prefHeight="349.0" prefWidth="419.0" style="-fx-background-color: black; -fx-background-radius: 35;">
+         <children>
+            <JFXButton layoutX="117.0" layoutY="253.0" onAction="#paysheetbtnOnAction" prefHeight="49.0" prefWidth="171.0" style="-fx-background-color: white;" text="Employee Paysheet" />
+            <ImageView fitHeight="179.0" fitWidth="205.0" layoutX="103.0" layoutY="39.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../assest/logo/payroll.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="824.0" layoutY="552.0" prefHeight="349.0" prefWidth="419.0" style="-fx-background-color: black; -fx-background-radius: 35;">
+         <children>
+            <ImageView fitHeight="179.0" fitWidth="205.0" layoutX="111.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../assest/logo/delivery.png" />
+               </image>
+            </ImageView>
+            <JFXButton layoutX="115.0" layoutY="259.0" onAction="#deliverybtnOnAction" prefHeight="49.0" prefWidth="171.0" style="-fx-background-color: white;" text="Delivery Reports" />
+         </children>
+      </AnchorPane>
+      <ImageView fitHeight="86.0" fitWidth="169.0" layoutX="1341.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../assest/logo/companylogo.png" />
+         </image>
+      </ImageView>
+      <AnchorPane layoutX="184.0" layoutY="552.0" prefHeight="349.0" prefWidth="419.0" style="-fx-background-color: black; -fx-background-radius: 35;">
+         <children>
+            <JFXButton layoutX="116.0" layoutY="253.0" onAction="#attendancebtnOnAction" prefHeight="49.0" prefWidth="171.0" style="-fx-background-color: white;" text="Attendance Sheet" />
+            <ImageView fitHeight="179.0" fitWidth="205.0" layoutX="116.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../assest/logo/attendance.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <Button layoutX="56.0" layoutY="38.0" mnemonicParsing="false" onAction="#backbtnOnAction" prefHeight="49.0" prefWidth="105.0" style="-fx-background-color: #442222;" text="Back" textFill="WHITE" />
+      <Label layoutX="698.0" layoutY="55.0" text="Reports">
+         <font>
+            <Font name="Calibri" size="36.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
