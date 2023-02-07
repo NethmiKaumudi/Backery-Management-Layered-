@@ -9,7 +9,7 @@ public class EmployeeDTO {
     private String Position;
     private Double BasicSalary;
 
-    public EmployeeDTO() {
+    public EmployeeDTO(String nIc, String name, String address, String vehicle_licance_number, int contact, double basic_salary) {
     }
 
     public EmployeeDTO(String nic, String name, String address, String licenceNo, int contact, String position, Double basicSalary) {
@@ -20,6 +20,10 @@ public class EmployeeDTO {
         Contact = contact;
         Position = position;
         BasicSalary = basicSalary;
+    }
+
+    public EmployeeDTO() {
+
     }
 
     public String getNic() {

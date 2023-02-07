@@ -9,9 +9,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import lk.ijse.BackeryManagement.dao.ProductDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.impl.ProductDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.impl.VehicleDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.ProductDAO;
+import lk.ijse.BackeryManagement.dao.custom.VehicleDAO;
 import lk.ijse.BackeryManagement.model.DeliveryVehicleModel;
-import lk.ijse.BackeryManagement.model.VehicleModel;
 import lk.ijse.BackeryManagement.dto.DeliveryDetailsTableDTO;
 import lk.ijse.BackeryManagement.dto.DeliveryVehicleDTO;
 import lk.ijse.BackeryManagement.dto.ProductDTO;
@@ -69,7 +71,10 @@ public class DeliveryDetailsFormController {
 
     @FXML
     private JFXTextField txtDate;
+    ProductDAO productDAOimpl = new ProductDAOimpl();
+    VehicleDAO vehicleDAOimpl = new VehicleDAOimpl();
     private ObservableList<DeliveryDetailsTabletm> obList = FXCollections.observableArrayList();
+
     public void initialize() throws SQLException, ClassNotFoundException {
         setDate();
         loadVehicleNos();
@@ -79,7 +84,7 @@ public class DeliveryDetailsFormController {
 
     private void loadProductIds() throws SQLException, ClassNotFoundException {
         ObservableList<String> observableList = FXCollections.observableArrayList();
-        ArrayList<String> idList = ProductDAOimpl.loadProductIds();
+        ArrayList<String> idList = productDAOimpl.loadProductIds();
 
         for (String id : idList) {
             observableList.add(id);
@@ -89,7 +94,7 @@ public class DeliveryDetailsFormController {
 
     private void loadVehicleNos() throws SQLException, ClassNotFoundException {
         ObservableList<String> observableList = FXCollections.observableArrayList();
-        ArrayList<String> idList = VehicleModel.loadVehicleNos();
+        ArrayList<String> idList = vehicleDAOimpl.loadVehicleNos();
 
         for (String No : idList) {
             observableList.add(No);
@@ -104,27 +109,27 @@ public class DeliveryDetailsFormController {
 
     @FXML
     void addbtnOnAction(ActionEvent event) {
-        String date =txtDate.getText();
-        String vehicleNo=cmbvNo.getValue();
-        String prId=cmbprId.getValue();
-        String productName=txtProductName.getText();
-        Double unitPrice= Double.valueOf(txtUnitPrice.getText());
-        int  productQty= Integer.parseInt(txtProductQty.getText());
-        Button btnDelete=new Button("Delete");
+        String date = txtDate.getText();
+        String vehicleNo = cmbvNo.getValue();
+        String prId = cmbprId.getValue();
+        String productName = txtProductName.getText();
+        Double unitPrice = Double.valueOf(txtUnitPrice.getText());
+        int productQty = Integer.parseInt(txtProductQty.getText());
+        Button btnDelete = new Button("Delete");
         txtProductQty.setText("");
 
         if (!obList.isEmpty()) {
-           L1:
+            L1:
             /* check same item has been in table. If so, update that row instead of adding new row to the table */
             for (int i = 0; i < tbldeliveryDetails.getItems().size(); i++) {
                 if (colprId.getCellData(i).equals(prId)) {
-                    productQty+=(int) colQuantity.getCellData(i);
+                    productQty += (int) colQuantity.getCellData(i);
 
                     obList.get(i).setProductQty(productQty);
                     tbldeliveryDetails.refresh();
                     return;
                 }
-         }
+            }
         }
         btnDelete.setOnAction((e) -> {
             ButtonType ok = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
@@ -132,17 +137,18 @@ public class DeliveryDetailsFormController {
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are You Sure ?");
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get().equals(ButtonType.OK)){
+            if (result.get().equals(ButtonType.OK)) {
                 System.out.println("ok");
                 DeliveryDetailsTabletm tm = tbldeliveryDetails.getSelectionModel().getSelectedItem();
 
                 tbldeliveryDetails.getItems().remove(tm);
             }
         });
-        obList.add(new DeliveryDetailsTabletm(date,vehicleNo,prId,productName,unitPrice,productQty,btnDelete));
+        obList.add(new DeliveryDetailsTabletm(date, vehicleNo, prId, productName, unitPrice, productQty, btnDelete));
         tbldeliveryDetails.setItems(obList);
 
     }
+
     private void setCellValueFactory() {
         colDate.setCellValueFactory(new PropertyValueFactory("date"));
         colvNo.setCellValueFactory(new PropertyValueFactory("vehicleNo"));
@@ -157,7 +163,7 @@ public class DeliveryDetailsFormController {
 
     @FXML
     void backbtnOnAction(ActionEvent event) throws IOException {
-        Navigation.navigate(Routes.SUMMARYFORM,pane);
+        Navigation.navigate(Routes.SUMMARYFORM, pane);
     }
 
     @FXML
@@ -171,12 +177,13 @@ public class DeliveryDetailsFormController {
 
         for (int i = 0; i < tbldeliveryDetails.getItems().size(); i++) {
             DeliveryDetailsTabletm tm = obList.get(i);
-            deliveryDetailTables.add(new DeliveryDetailsTableDTO(Date, tm.getVehicleNo(), tm.getPrId(),tm.getProductName(),tm.getUnitPrice(),tm.getProductQty()));
+            deliveryDetailTables.add(new DeliveryDetailsTableDTO(Date, tm.getVehicleNo(), tm.getPrId(), tm.getProductName(), tm.getUnitPrice(), tm.getProductQty()));
         }
 
-        DeliveryVehicleDTO deliveryVehicle=new DeliveryVehicleDTO(Date,vehicleNo,deliveryDetailTables);
+        DeliveryVehicleDTO deliveryVehicle = new DeliveryVehicleDTO(Date, vehicleNo, deliveryDetailTables);
+        DeliveryVehicleModel deliveryVehicleModel = new DeliveryVehicleModel();
         try {
-            boolean isDelivered = DeliveryVehicleModel.deliveryVehicles(deliveryVehicle);
+            boolean isDelivered = deliveryVehicleModel.deliveryVehicles(deliveryVehicle);
             if (isDelivered) {
                 /* to clear table */
                 obList.clear();
@@ -190,19 +197,21 @@ public class DeliveryDetailsFormController {
 
 
     }
+
     @FXML
     void cmbprIdOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
 
-            String id= String.valueOf(cmbprId.getValue());
-            ProductDTO product= ProductDAOimpl.search(id);
-            txtProductName.setText(product.getProductName());
-            txtUnitPrice.setText(String.valueOf(product.getUnitPrice()));
-            txtProductQty.requestFocus();
-        }
-    public void txtqtyOnAction(ActionEvent actionEvent) {
-     addbtnOnAction(actionEvent);
+        String id = String.valueOf(cmbprId.getValue());
+        ProductDTO product = productDAOimpl.search(id);
+        txtProductName.setText(product.getProductName());
+        txtUnitPrice.setText(String.valueOf(product.getUnitPrice()));
+        txtProductQty.requestFocus();
     }
 
+    public void txtqtyOnAction(ActionEvent actionEvent) {
+        addbtnOnAction(actionEvent);
     }
+
+}
 
 

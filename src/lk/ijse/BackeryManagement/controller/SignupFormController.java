@@ -9,7 +9,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 
 import javafx.scene.paint.Paint;
-import lk.ijse.BackeryManagement.dao.SignUpDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.impl.SignUpDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.SignUpDAO;
 import lk.ijse.BackeryManagement.dto.UserDTO;
 import lk.ijse.BackeryManagement.util.Navigation;
 import lk.ijse.BackeryManagement.util.Routes;
@@ -55,6 +56,7 @@ public class SignupFormController {
     private Matcher pwMatcher;
     private Matcher emailMatcher;
     private Matcher nIcMatcher;
+    SignUpDAO signUpDAOimpl=new SignUpDAOimpl();
     private void setPatterns() {
         Pattern uIdPattern = Pattern.compile("^[U0-9]{4}$");
         uIdMatcher = uIdPattern.matcher(txtUid.getText());
@@ -96,8 +98,7 @@ public class SignupFormController {
         String Email=txtemail.getText();
         String Nic=txtnic.getText();
 
-        UserDTO user =new UserDTO(Uid,UserName,PassWord,Email,Nic);
-        boolean isAdded = SignUpDAOimpl.signinUser(user);
+        boolean isAdded = signUpDAOimpl.add(new UserDTO(Uid,UserName,PassWord,Email,Nic));
 
         if (isAdded) {
           //  clearFields();

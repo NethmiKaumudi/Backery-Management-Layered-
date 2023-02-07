@@ -12,7 +12,7 @@ public class MaterialTableDTO {
     private String materialqty;
 
 
-    public MaterialTableDTO() {
+    public MaterialTableDTO(MaterialTableDTO materialTable) {
     }
 
     public MaterialTableDTO(String date, String prId, String productName, Double unitPrice, int prductqty, String id, String materialtype, String userId, String materialqty) {
@@ -21,7 +21,7 @@ public class MaterialTableDTO {
         this.productName = productName;
         this.unitPrice = unitPrice;
         this.prductqty = prductqty;
-       this.Id = id;
+        this.Id = id;
         this.materialtype = materialtype;
         this.userId = userId;
         this.materialqty = materialqty;

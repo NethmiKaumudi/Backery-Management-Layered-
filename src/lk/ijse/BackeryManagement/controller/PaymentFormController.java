@@ -11,8 +11,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import lk.ijse.BackeryManagement.dao.custom.impl.PaymentDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.PaymentDAO;
 import lk.ijse.BackeryManagement.db.DBConnection;
-import lk.ijse.BackeryManagement.model.PaymentModel;
 import lk.ijse.BackeryManagement.dto.PaymentDTO;
 import lk.ijse.BackeryManagement.util.Navigation;
 import lk.ijse.BackeryManagement.util.Routes;
@@ -66,9 +67,10 @@ public class PaymentFormController {
     @FXML
     private JFXTextField txtDate;
     private String searchText = "";
-
-    public  void initialize(){
-    setDate();
+    PaymentDTO payment = new PaymentDTO();
+    PaymentDAO paymentDAOimpl=new PaymentDAOimpl();
+    public void initialize() {
+        setDate();
 
         colPid.setCellValueFactory(new PropertyValueFactory("paymentId"));
         colDate.setCellValueFactory(new PropertyValueFactory("Date"));
@@ -79,12 +81,12 @@ public class PaymentFormController {
         tableView(searchText);
 
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-            searchText=newValue;
+            searchText = newValue;
             tableView(searchText);
         });
     }
 
-    private void tableView(String text){
+    private void tableView(String text) {
         String searchText = "%" + text + "%";
         try {
             ObservableList<PaymentTm> tmList = FXCollections.observableArrayList();
@@ -94,15 +96,15 @@ public class PaymentFormController {
             String sql = "SELECT * From payment  WHERE  pId LIKE ?||date LIKE ?||description LIKE ?||price LIKE ?||mId LIKE ?";
 
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,searchText);
-            statement.setString(2,searchText);
-            statement.setString(3,searchText);
-            statement.setString(4,searchText);
-            statement.setString(5,searchText);
+            statement.setString(1, searchText);
+            statement.setString(2, searchText);
+            statement.setString(3, searchText);
+            statement.setString(4, searchText);
+            statement.setString(5, searchText);
             ResultSet set = statement.executeQuery();
 
-            while (set.next()){
-                PaymentTm paymentTm=new PaymentTm(
+            while (set.next()) {
+                PaymentTm paymentTm = new PaymentTm(
                         set.getString(1),
                         set.getString(2),
                         set.getString(3),
@@ -114,7 +116,7 @@ public class PaymentFormController {
 
             tblPayment.setItems(tmList);
 
-        } catch (ClassNotFoundException | SQLException e)  {
+        } catch (ClassNotFoundException | SQLException e) {
             System.out.println(e);
         }
     }
@@ -122,14 +124,13 @@ public class PaymentFormController {
     @FXML
     void addbtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
 
-       String paymentId=txtpId.getText();
-       String Date=txtDate.getText();
-       String Description=txtDesc.getText();
-       Double Price= Double.valueOf(txtPrice.getText());
-       String Id=txtmId.getText();
+        String paymentId = txtpId.getText();
+        String Date = txtDate.getText();
+        String Description = txtDesc.getText();
+        Double Price = Double.valueOf(txtPrice.getText());
+        String Id = txtmId.getText();
 
-       PaymentDTO payment=new PaymentDTO(paymentId,Date,Description,Price,Id);
-        boolean isAdded = PaymentModel.addPayment(payment);
+        boolean isAdded = paymentDAOimpl.add(new PaymentDTO(paymentId, Date, Description, Price, Id));
         tableView(searchText);
         if (isAdded) {
             clearFields();
@@ -140,7 +141,8 @@ public class PaymentFormController {
 
 
     }
-    private void clearFields(){
+
+    private void clearFields() {
         txtpId.clear();
         txtDesc.clear();
         txtPrice.clear();
@@ -150,20 +152,19 @@ public class PaymentFormController {
 
     @FXML
     void backbtnOnAction(ActionEvent event) throws IOException {
-        Navigation.navigate(Routes.SUMMARYFORM,pane);
+        Navigation.navigate(Routes.SUMMARYFORM, pane);
     }
 
     @FXML
     void deletebtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
         String paymentId = txtpId.getText();
-        PaymentDTO payment=new PaymentDTO();
         payment.setPaymentId(paymentId);
-        boolean isDeleted = PaymentModel.deletePayment(payment);
-       tableView(searchText);
+        boolean isDeleted = paymentDAOimpl.delete(paymentId);
+        tableView(searchText);
         if (isDeleted) {
             // System.out.println("Deleted");
             new Alert(Alert.AlertType.CONFIRMATION, "Payment Details Deleted!").show();
-        }else{
+        } else {
             //System.out.println("Somthing Happend");
             new Alert(Alert.AlertType.WARNING, "Something happened!").show();
         }
@@ -176,7 +177,7 @@ public class PaymentFormController {
 
         String paymentId = txtpId.getText();
         try {
-            PaymentDTO payment=PaymentModel.searchPayment(paymentId);
+             payment = paymentDAOimpl.search(paymentId);
             if (payment != null) {
                 fillData(payment);
                 // System.out.println( "Fill");
@@ -208,21 +209,20 @@ public class PaymentFormController {
 //        int contact= Integer.parseInt(String.valueOf(txtcontact.getText()));
 //        String position=txtPosition.getText();
 //        Double BasicSalary= Double.valueOf(txtSalary.getText());
-        String paymentId=txtpId.getText();
-        String Date=txtDate.getText();
-        String Description=txtDesc.getText();
-        Double Price= Double.valueOf(txtPrice.getText());
-        String Id=txtmId.getText();
+        String paymentId = txtpId.getText();
+        String Date = txtDate.getText();
+        String Description = txtDesc.getText();
+        Double Price = Double.valueOf(txtPrice.getText());
+        String Id = txtmId.getText();
 
-        PaymentDTO payment=new PaymentDTO(paymentId,Date,Description,Price,Id);
-        boolean isUpdate = PaymentModel.updatePayment(payment);
+        boolean isUpdate = paymentDAOimpl.update(new PaymentDTO(paymentId, Date, Description, Price, Id));
 
 
         if (isUpdate) {
             // System.out.println("Updated");
             new Alert(Alert.AlertType.CONFIRMATION, "Payment Details Updated!").show();
 
-        }else{
+        } else {
             // System.out.println("Not");
             new Alert(Alert.AlertType.WARNING, "Something happened!").show();
 
@@ -236,7 +236,7 @@ public class PaymentFormController {
     }
 
 
-    }
+}
 
 
 

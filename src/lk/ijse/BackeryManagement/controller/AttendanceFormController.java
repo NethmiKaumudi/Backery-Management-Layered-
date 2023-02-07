@@ -11,9 +11,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import lk.ijse.BackeryManagement.dao.EmployeeDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.impl.AttendanceDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.impl.EmployeeDAOImpl;
+
+import lk.ijse.BackeryManagement.dao.custom.AttendanceDAO;
+
+import lk.ijse.BackeryManagement.dao.custom.EmployeeDAO;
 import lk.ijse.BackeryManagement.db.DBConnection;
-import lk.ijse.BackeryManagement.model.AttendanceModel;
 import lk.ijse.BackeryManagement.dto.AttendanceDTO;
 import lk.ijse.BackeryManagement.util.Navigation;
 import lk.ijse.BackeryManagement.util.Routes;
@@ -52,7 +56,9 @@ public class AttendanceFormController {
     @FXML
     private JFXTextField txtAttendance;
     private String searchText = "";
-
+    AttendanceDTO attendance = new AttendanceDTO();
+    AttendanceDAO attendanceDAOimpl = new AttendanceDAOimpl();
+    EmployeeDAO employeeDAOimpl = new EmployeeDAOImpl();
 
     public void initialize() throws SQLException, ClassNotFoundException {
         setDate();
@@ -70,14 +76,16 @@ public class AttendanceFormController {
         });
     }
 
-    private void tableView(String text) {
+    void tableView(String text) {
         String searchText = "%" + text + "%";
+        // ekama observer list ekak newai da gaththe
         try {
             ObservableList<AttendanceTm> tmList = FXCollections.observableArrayList();
 
             Connection connection = DBConnection.getInstance().getConnection();
             //  String sql = "SELECT * From employee";
             String sql = "SELECT * From attendance  WHERE  date LIKE ?||attendance LIKE ?||nIc LIKE ?";
+            //attendance= attendanceDAOimpl.tableView();
 
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, searchText);
@@ -103,9 +111,9 @@ public class AttendanceFormController {
     }
 
 
-    private void loadNics() throws SQLException, ClassNotFoundException {
+    void loadNics() throws SQLException, ClassNotFoundException {
         ObservableList<String> observableList = FXCollections.observableArrayList();
-        ArrayList<String> idList = EmployeeDAOimpl.loadEmployeeNics();
+        ArrayList<String> idList = employeeDAOimpl.load();
 
         for (String nic : idList) {
             observableList.add(nic);
@@ -113,7 +121,7 @@ public class AttendanceFormController {
         cmbNic.setItems(observableList);
     }
 
-    private void setDate() {
+    void setDate() {
         txtDate.setText(String.valueOf(LocalDate.now()));
     }
 
@@ -123,8 +131,8 @@ public class AttendanceFormController {
         String date = txtDate.getText();
         String Attendance = txtAttendance.getText();
         String Nic = cmbNic.getValue();
-        // AttendanceDTO attendance = new AttendanceDTO(date, Attendance, Nic);
-        boolean isAdded = AttendanceModel.addAttendance(new AttendanceDTO(date, Attendance, Nic));
+
+        boolean isAdded = attendanceDAOimpl.add(new AttendanceDTO(date, Attendance, Nic));
         tableView(searchText);
         if (isAdded) {
             clearFields();
@@ -134,7 +142,7 @@ public class AttendanceFormController {
         }
     }
 
-    private void clearFields() {
+    void clearFields() {
 
         txtAttendance.clear();
     }
@@ -148,10 +156,9 @@ public class AttendanceFormController {
     void deletebtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
         String date = txtDate.getText();
         String Nic = cmbNic.getValue();
-        AttendanceDTO attendance = new AttendanceDTO();
         attendance.setDate(date);
         attendance.setNic(Nic);
-        boolean isDeleted = AttendanceModel.deleteAttendance(attendance);
+        boolean isDeleted = attendanceDAOimpl.delete(attendance);
         tableView(searchText);
         if (isDeleted) {
             // System.out.println("Deleted");
@@ -171,8 +178,8 @@ public class AttendanceFormController {
         String nic = cmbNic.getValue();
 
 
-        AttendanceDTO attendance = new AttendanceDTO(date, Attendance, nic);
-        boolean isUpdate = AttendanceModel.updateAttendance(attendance);
+        new AttendanceDTO(date, Attendance, nic);
+        boolean isUpdate = attendanceDAOimpl.update(attendance);
 
 
         if (isUpdate) {
@@ -198,9 +205,8 @@ public class AttendanceFormController {
 //        txtProductQty.requestFocus();
         String date = txtDate.getText();
         String nic = cmbNic.getValue();
-        AttendanceDTO attendance = AttendanceModel.searchAttendance(date, nic);
+        attendance = attendanceDAOimpl.search(date, nic);
         txtAttendance.setText(attendance.getAttendance());
     }
-
 
 }

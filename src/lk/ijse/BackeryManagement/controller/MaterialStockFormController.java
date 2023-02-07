@@ -10,7 +10,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import lk.ijse.BackeryManagement.dao.MaterialStockDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.impl.MaterialStockDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.MaterialStockDAO;
 import lk.ijse.BackeryManagement.db.DBConnection;
 import lk.ijse.BackeryManagement.dto.MaterialStockDTO;
 import lk.ijse.BackeryManagement.util.Navigation;
@@ -56,8 +57,10 @@ public class MaterialStockFormController {
     @FXML
     private JFXTextField txtSearch;
     private String searchText = "";
+    MaterialStockDTO materialStock = new MaterialStockDTO();
+    MaterialStockDAO materialStockDAOimpl=new MaterialStockDAOimpl();
 
-    public void initialize(){
+    public void initialize() {
         colMid.setCellValueFactory(new PropertyValueFactory<>("Mid"));
         colMaterialType.setCellValueFactory(new PropertyValueFactory<>("MaterialType"));
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("Quantity"));
@@ -66,12 +69,13 @@ public class MaterialStockFormController {
         tableView(searchText);
 
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-            searchText=newValue;
+            searchText = newValue;
             tableView(searchText);
         });
 
     }
-    private void tableView(String text){
+
+    private void tableView(String text) {
         String searchText = "%" + text + "%";
         try {
             ObservableList<MaterialStockTm> tmList = FXCollections.observableArrayList();
@@ -81,15 +85,15 @@ public class MaterialStockFormController {
             String sql = "SELECT * From material_stock  WHERE  mId LIKE ?|| material_type LIKE ?||quantity LIKE ?|| uId LIKE ?";
 
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,searchText);
-            statement.setString(2,searchText);
-            statement.setString(3,searchText);
-            statement.setString(4,searchText);
+            statement.setString(1, searchText);
+            statement.setString(2, searchText);
+            statement.setString(3, searchText);
+            statement.setString(4, searchText);
 
             ResultSet set = statement.executeQuery();
 
-            while (set.next()){
-                MaterialStockTm materialStockTm=new MaterialStockTm(
+            while (set.next()) {
+                MaterialStockTm materialStockTm = new MaterialStockTm(
                         set.getString(1),
                         set.getString(2),
                         set.getString(3),
@@ -100,7 +104,7 @@ public class MaterialStockFormController {
 
             tblMaterialStock.setItems(tmList);
 
-        } catch (ClassNotFoundException | SQLException e)  {
+        } catch (ClassNotFoundException | SQLException e) {
             System.out.println(e);
         }
     }
@@ -108,24 +112,24 @@ public class MaterialStockFormController {
 
     @FXML
     void addbtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
-        String Mid=txtmId.getText();
-        String MaterialType=txtMaterialType.getText();
-        String Quantity=txtQuantity.getText();
-        String Uid=txtUserId.getText();
+        String Mid = txtmId.getText();
+        String MaterialType = txtMaterialType.getText();
+        String Quantity = txtQuantity.getText();
+        String Uid = txtUserId.getText();
 
-    MaterialStockDTO materialStock=new MaterialStockDTO(Mid,MaterialType,Quantity,Uid);
-    boolean isAdded = MaterialStockDAOimpl.addMaterialStock(materialStock);
+        boolean isAdded = materialStockDAOimpl.add(new MaterialStockDTO(Mid, MaterialType, Quantity, Uid));
         tableView(searchText);
         if (isAdded) {
-        clearFields();
-        new Alert(Alert.AlertType.CONFIRMATION, "Material  Added!").show();
-    } else {
-        new Alert(Alert.AlertType.WARNING, "Something happened!").show();
+            clearFields();
+            new Alert(Alert.AlertType.CONFIRMATION, "Material  Added!").show();
+        } else {
+            new Alert(Alert.AlertType.WARNING, "Something happened!").show();
+        }
+
+
     }
 
-
-}
-    private void clearFields(){
+    private void clearFields() {
         txtmId.clear();
         txtMaterialType.clear();
         txtQuantity.clear();
@@ -133,24 +137,21 @@ public class MaterialStockFormController {
     }
 
 
-
-
     @FXML
     void backbtnOnAction(ActionEvent event) throws IOException {
-        Navigation.navigate(Routes.SUMMARYFORM,pane);
+        Navigation.navigate(Routes.SUMMARYFORM, pane);
     }
 
     @FXML
     void deletebtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
         String Mid = txtmId.getText();
-        MaterialStockDTO materialStock=new MaterialStockDTO();
         materialStock.setMid(Mid);
-        boolean isDeleted = MaterialStockDAOimpl.deleteMaterialStock(Mid);
+        boolean isDeleted = materialStockDAOimpl.delete(Mid);
         tableView(searchText);
         if (isDeleted) {
             // System.out.println("Deleted");
             new Alert(Alert.AlertType.CONFIRMATION, "Material Deleted!").show();
-        }else{
+        } else {
             //System.out.println("Somthing Happend");
             new Alert(Alert.AlertType.WARNING, "Something happened!").show();
         }
@@ -160,19 +161,18 @@ public class MaterialStockFormController {
 
     @FXML
     void updatebtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
-       String Id =txtmId.getText();
-       String MaterialType=txtMaterialType.getText();
-       String Quantity=txtQuantity.getText();
-       String Uid=txtUserId.getText();
-       MaterialStockDTO materialStock=new MaterialStockDTO(Id,MaterialType,Quantity,Uid);
-       boolean isUpdate = MaterialStockDAOimpl.updateMaterial(materialStock);
+        String Id = txtmId.getText();
+        String MaterialType = txtMaterialType.getText();
+        String Quantity = txtQuantity.getText();
+        String Uid = txtUserId.getText();
+        boolean isUpdate = materialStockDAOimpl.update(new MaterialStockDTO(Id, MaterialType, Quantity, Uid));
 
 
         if (isUpdate) {
             // System.out.println("Updated");
             new Alert(Alert.AlertType.CONFIRMATION, "Material Details Updated!").show();
 
-        }else{
+        } else {
             // System.out.println("Not");
             new Alert(Alert.AlertType.WARNING, "Something happened!").show();
 
@@ -187,8 +187,8 @@ public class MaterialStockFormController {
 
         String Id = txtmId.getText();
         try {
-            MaterialStockDTO materialStock=MaterialStockDAOimpl.searchMaterial(Id);
-            if (materialStock!= null) {
+            materialStock = materialStockDAOimpl.search(Id);
+            if (materialStock != null) {
                 fillData(materialStock);
                 // System.out.println( "Fill");
                 new Alert(Alert.AlertType.CONFIRMATION, "MaterialStock Detailes Searched and filled  Fields succesfully!").show();

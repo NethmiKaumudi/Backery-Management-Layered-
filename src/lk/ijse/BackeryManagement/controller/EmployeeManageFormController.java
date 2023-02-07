@@ -13,18 +13,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
-import lk.ijse.BackeryManagement.dao.EmployeeDAOimpl;
-import lk.ijse.BackeryManagement.db.DBConnection;
+import lk.ijse.BackeryManagement.dao.custom.impl.EmployeeDAOImpl;
+import lk.ijse.BackeryManagement.dao.custom.EmployeeDAO;
 import lk.ijse.BackeryManagement.dto.EmployeeDTO;
 import lk.ijse.BackeryManagement.util.Navigation;
 import lk.ijse.BackeryManagement.util.Routes;
-import lk.ijse.BackeryManagement.view.tm.EmployeeTM;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +30,7 @@ public class EmployeeManageFormController {
     private AnchorPane pane;
 
     @FXML
-    private TableView<EmployeeTM> tblemployee;
+    private TableView<EmployeeDTO> tblemployee;
 
     @FXML
     private TableColumn colNic;
@@ -106,8 +103,11 @@ public class EmployeeManageFormController {
     private Matcher PositionMatcher;
     private Matcher SalaryMatcher;
 
+    EmployeeDTO employee=new EmployeeDTO();
+    EmployeeDAO employeeDAOimpl = new EmployeeDAOImpl();
 
     public void initialize(){
+
        setPatterns();
         colNic.setCellValueFactory(new PropertyValueFactory<>("Nic"));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -127,43 +127,58 @@ public class EmployeeManageFormController {
 
 
     }
-    private void tableView(String text){
+    private void tableView(String text) {
+        ObservableList<EmployeeDTO> tmList = FXCollections.observableArrayList();
         String searchText = "%" + text + "%";
+        ArrayList<EmployeeDTO> employeeDTOS = null;
         try {
-            ObservableList<EmployeeTM> tmList = FXCollections.observableArrayList();
-
-            Connection connection = DBConnection.getInstance().getConnection();
-       //  String sql = "SELECT * From employee";
-            String sql = "SELECT * From employee  WHERE  nIc LIKE ?||name LIKE ?||address LIKE ?||vehicle_licance_number LIKE ?||contact LIKE ?||position LIKE ?||basic_salary LIKE ?";
-
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,searchText);
-            statement.setString(2,searchText);
-            statement.setString(3,searchText);
-            statement.setString(4,searchText);
-            statement.setString(5,searchText);
-            statement.setString(6,searchText);
-            statement.setString(7,searchText);
-            ResultSet set = statement.executeQuery();
-
-            while (set.next()){
-               EmployeeTM employeeTM=new EmployeeTM(
-                       set.getString(1),
-                       set.getString(2),
-                       set.getString(3),
-                       set.getString(4),
-                       set.getInt(5),
-                       set.getString(6),
-                       set.getDouble(7)
-                       );
-                tmList.add(employeeTM);
+            employeeDTOS = employeeDAOimpl.tableView();
+            for(EmployeeDTO s : employeeDTOS){
+                tmList.add(s);
+                tblemployee.setItems(tmList);
+                initialize();
             }
-
-            tblemployee.setItems(tmList);
-
-        } catch (ClassNotFoundException | SQLException e)  {
-            System.out.println(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+      //  for(EmployeeDTO s : employeeDTOS){
+
+
+
+//
+//            Connection connection = DBConnection.getInstance().getConnection();
+//       //  String sql = "SELECT * From employee";
+//            String sql = "SELECT * From employee  WHERE  nIc LIKE ?||name LIKE ?||address LIKE ?||vehicle_licance_number LIKE ?||contact LIKE ?||position LIKE ?||basic_salary LIKE ?";
+//
+//            PreparedStatement statement = connection.prepareStatement(sql);
+//            statement.setString(1,searchText);
+//            statement.setString(2,searchText);
+//            statement.setString(3,searchText);
+//            statement.setString(4,searchText);
+//            statement.setString(5,searchText);
+//            statement.setString(6,searchText);
+//            statement.setString(7,searchText);
+//            ResultSet set = statement.executeQuery();
+//
+//            while (set.next()){
+//               EmployeeTM employeeTM=new EmployeeTM(
+//                       set.getString(1),
+//                       set.getString(2),
+//                       set.getString(3),
+//                       set.getString(4),
+//                       set.getInt(5),
+//                       set.getString(6),
+//                       set.getDouble(7)
+//                       );
+               // tmList.add(employeeTM);
+            //employeeDAOimpl.
+          //  }
+
+
+
+
     }
  private void setPatterns(){
      Pattern nIcPattern=Pattern.compile("^(?:19|20)?\\d{2}(?:[0-35-8]\\d\\d(?<!(?:000|500|36[7-9]|3[7-9]\\d|86[7-9]|8[7-9]\\d)))\\d{4}(?i:v|x)$");
@@ -210,7 +225,7 @@ public class EmployeeManageFormController {
         String position=txtPosition.getText();
         Double BasicSalary= Double.valueOf(txtSalary.getText());
       //  EmployeeDTO employee=new EmployeeDTO(Nic,name,address,licenceNo,contact,position,BasicSalary);
-        boolean isAdded = EmployeeDAOimpl.addEmployee(new EmployeeDTO(Nic,name,address,licenceNo,contact,position,BasicSalary));
+        boolean isAdded = employeeDAOimpl.add(new EmployeeDTO(Nic,name,address,licenceNo,contact,position,BasicSalary));
         tableView(searchText);
         if (isAdded) {
             clearFields();
@@ -237,21 +252,12 @@ public class EmployeeManageFormController {
 
     @FXML
     void deletebtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
-//        String Nic = txtnic.getText();
-//        EmployeeDTO employee=new EmployeeDTO();
-//        employee.setNic(Nic);
-//        boolean isDeleted = EmployeeDAOimpl.deleteEmployee(Nic);
-//        tableView(searchText);
-//        if (isDeleted) {
-//            new Alert(Alert.AlertType.CONFIRMATION, "Employee Deleted!").show();
-//        }else{
-//            new Alert(Alert.AlertType.WARNING, "Something happened!").show();
-//        }
+
         String nic = txtnic.getText();
         try {
-            EmployeeDTO employee=new EmployeeDTO();
+
             employee.setNic(nic);
-            boolean delete = EmployeeDAOimpl.deleteEmployee(employee);
+            boolean delete = employeeDAOimpl.delete(nic);
             tableView(searchText);
             if (delete) {
                 new Alert(Alert.AlertType.CONFIRMATION, "Customer deleted!").show();
@@ -273,7 +279,7 @@ public class EmployeeManageFormController {
     void nicOnAction(ActionEvent event) {
         String Nic = txtnic.getText();
         try {
-            EmployeeDTO employee = EmployeeDAOimpl.searchEmployee(Nic);
+            employee = employeeDAOimpl.search(Nic);
             if (employee != null) {
                 fillData(employee);
                // System.out.println( "Fill");
@@ -310,7 +316,7 @@ public class EmployeeManageFormController {
 
 
 //       EmployeeDTO employee=new EmployeeDTO(nic,name,address,licenceNo,contact,position,BasicSalary);
-        boolean isUpdate = EmployeeDAOimpl. updateEmployee(new EmployeeDTO(nic,name,address,licenceNo,contact,position,BasicSalary));
+        boolean isUpdate = employeeDAOimpl. update(new EmployeeDTO(nic,name,address,licenceNo,contact,position,BasicSalary));
 
 
         if (isUpdate) {

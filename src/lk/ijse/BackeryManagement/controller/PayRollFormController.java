@@ -11,9 +11,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import lk.ijse.BackeryManagement.dao.EmployeeDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.impl.EmployeeDAOImpl;
+import lk.ijse.BackeryManagement.dao.custom.impl.PayRollDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.EmployeeDAO;
+import lk.ijse.BackeryManagement.dao.custom.PayRollDAO;
 import lk.ijse.BackeryManagement.db.DBConnection;
-import lk.ijse.BackeryManagement.model.PayrollModel;
 import lk.ijse.BackeryManagement.dto.EmployeeDTO;
 import lk.ijse.BackeryManagement.dto.PayrollDTO;
 import lk.ijse.BackeryManagement.util.Navigation;
@@ -66,6 +68,10 @@ public class PayRollFormController {
     private TableColumn<?, ?> colEmployerETF;
 
     private String searchText = "";
+    PayrollDTO payroll = new PayrollDTO();
+    PayRollDAO payRollDAOimpl = new PayRollDAOimpl();
+    EmployeeDAO employeeDAOimpl = new EmployeeDAOImpl();
+
     public void initialize() throws SQLException, ClassNotFoundException {
         loadNics();
         colNic.setCellValueFactory(new PropertyValueFactory<>("Nic"));
@@ -80,15 +86,14 @@ public class PayRollFormController {
         tableView(searchText);
 
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-            searchText=newValue;
+            searchText = newValue;
             tableView(searchText);
         });
 
     }
 
 
-
-    private void tableView(String text){
+    private void tableView(String text) {
         String searchText = "%" + text + "%";
         try {
             ObservableList<PayrollTm> tmList = FXCollections.observableArrayList();
@@ -98,17 +103,17 @@ public class PayRollFormController {
             String sql = "SELECT * From payroll WHERE  nIC  LIKE ?||month_year LIKE ?||basic_salary LIKE ?|| employee_EPF LIKE ?||monthly_salary LIKE ?||employer_EPF LIKE ?||employer_ETF  LIKE ?";
 
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,searchText);
-            statement.setString(2,searchText);
-            statement.setString(3,searchText);
-            statement.setString(4,searchText);
-            statement.setString(5,searchText);
-            statement.setString(6,searchText);
-            statement.setString(7,searchText);
+            statement.setString(1, searchText);
+            statement.setString(2, searchText);
+            statement.setString(3, searchText);
+            statement.setString(4, searchText);
+            statement.setString(5, searchText);
+            statement.setString(6, searchText);
+            statement.setString(7, searchText);
             ResultSet set = statement.executeQuery();
 
-            while (set.next()){
-                PayrollTm payrollTm=new PayrollTm(
+            while (set.next()) {
+                PayrollTm payrollTm = new PayrollTm(
                         set.getString(1),
                         set.getString(2),
                         set.getDouble(3),
@@ -123,15 +128,16 @@ public class PayRollFormController {
 
             tblPayroll.setItems(tmList);
 
-        } catch (ClassNotFoundException | SQLException e)  {
+        } catch (ClassNotFoundException | SQLException e) {
             System.out.println(e);
         }
     }
+
     private void loadNics() throws SQLException, ClassNotFoundException {
         ObservableList<String> observableList = FXCollections.observableArrayList();
-        ArrayList<String> idList = EmployeeDAOimpl.loadEmployeeNics();
+        ArrayList<String> idList = employeeDAOimpl.load();
 
-        for (String nic: idList) {
+        for (String nic : idList) {
             observableList.add(nic);
         }
         cmbNic.setItems(observableList);
@@ -139,20 +145,19 @@ public class PayRollFormController {
 
     @FXML
     void addbtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
-        String Nic=cmbNic.getValue();
-       String monthYear=txtmonthyear.getText();
-       Double basicSalary= Double.valueOf(txtBasicSalary.getText());
-       Double employeeEPF=(basicSalary*8)/100;
-       Double monthlySalary=basicSalary-employeeEPF;
-       Double employerEPF=(basicSalary*12)/100;
-       Double employerETF=(basicSalary*3)/100;
+        String Nic = cmbNic.getValue();
+        String monthYear = txtmonthyear.getText();
+        Double basicSalary = Double.valueOf(txtBasicSalary.getText());
+        Double employeeEPF = (basicSalary * 8) / 100;
+        Double monthlySalary = basicSalary - employeeEPF;
+        Double employerEPF = (basicSalary * 12) / 100;
+        Double employerETF = (basicSalary * 3) / 100;
 
 
-        PayrollDTO payroll=new PayrollDTO(Nic,monthYear,basicSalary,employeeEPF,monthlySalary,employerEPF,employerETF);
-        boolean isAdded = PayrollModel.addPayroll(payroll);
+        boolean isAdded = payRollDAOimpl.add(new PayrollDTO(Nic, monthYear, basicSalary, employeeEPF, monthlySalary, employerEPF, employerETF));
         tableView(searchText);
         if (isAdded) {
-           clearFields();
+            clearFields();
             new Alert(Alert.AlertType.CONFIRMATION, "Payroll Added!").show();
         } else {
             new Alert(Alert.AlertType.WARNING, "Something happened!").show();
@@ -166,14 +171,14 @@ public class PayRollFormController {
 
     @FXML
     void backbtnOnAction(ActionEvent event) throws IOException {
-        Navigation.navigate(Routes.SUMMARYFORM,pane);
+        Navigation.navigate(Routes.SUMMARYFORM, pane);
     }
 
     @FXML
     void cmbnicOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
-        String Nic= String.valueOf(cmbNic.getValue());
+        String Nic = String.valueOf(cmbNic.getValue());
         System.out.println(Nic);
-        EmployeeDTO employee= EmployeeDAOimpl.searchEmployee(Nic);
+        EmployeeDTO employee = employeeDAOimpl.search(Nic);
         txtBasicSalary.setText(String.valueOf(employee.getBasicSalary()));
 
 
@@ -183,16 +188,15 @@ public class PayRollFormController {
     @FXML
     void deletebtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
         String Nic = cmbNic.getValue();
-        String monthYear=txtmonthyear.getText();
-     PayrollDTO payroll=new PayrollDTO();
+        String monthYear = txtmonthyear.getText();
         payroll.setNic(Nic);
         payroll.setMonthYear(monthYear);
-        boolean isDeleted = PayrollModel.deletePayroll(payroll);
+        boolean isDeleted = payRollDAOimpl.delete(payroll);
         tableView(searchText);
         if (isDeleted) {
             // System.out.println("Deleted");
             new Alert(Alert.AlertType.CONFIRMATION, " Employee Payroll Deleted!").show();
-        }else{
+        } else {
             //System.out.println("Somthing Happend");
             new Alert(Alert.AlertType.WARNING, "Something happened!").show();
         }

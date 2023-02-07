@@ -10,9 +10,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import lk.ijse.BackeryManagement.dao.VehicleDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.impl.VehicleDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.VehicleDAO;
 import lk.ijse.BackeryManagement.db.DBConnection;
-import lk.ijse.BackeryManagement.model.VehicleModel;
 import lk.ijse.BackeryManagement.dto.VehicleDTO;
 import lk.ijse.BackeryManagement.util.Navigation;
 import lk.ijse.BackeryManagement.util.Routes;
@@ -44,8 +44,8 @@ public class VehicleFormController {
     @FXML
     private JFXTextField txtSearch;
     private String searchText = "";
-
-
+    VehicleDTO vehicle=new VehicleDTO();
+    VehicleDAO vehicleDAOimpl=new VehicleDAOimpl();
     public void initialize(){
         ColvNo.setCellValueFactory(new PropertyValueFactory<>("VehicleNo"));
         ColDetals.setCellValueFactory(new PropertyValueFactory<>("VehicleDetails"));
@@ -92,8 +92,7 @@ public class VehicleFormController {
         String VehicleNo=txtvNo.getText();
         String VehicleDetails=txtVehicleDetails.getText();
 
-        VehicleDTO vehicle=new VehicleDTO(VehicleNo,VehicleDetails);
-        boolean isAdded = VehicleDAOimpl.addVehicle(vehicle);
+        boolean isAdded = vehicleDAOimpl.add(new VehicleDTO(VehicleNo,VehicleDetails));
     tableView(searchText);
         if (isAdded) {
             clearFields();
@@ -119,9 +118,8 @@ public class VehicleFormController {
     @FXML
     void deletebtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
         String VehicleNo= txtvNo.getText();
-        VehicleDTO vehicle=new VehicleDTO();
         vehicle.setVehicleNo(VehicleNo);
-        boolean isDeleted = VehicleModel.deleteVehicle(vehicle);
+        boolean isDeleted = vehicleDAOimpl.delete(VehicleNo);
         tableView(searchText);
         if (isDeleted) {
             // System.out.println("Deleted");
@@ -138,8 +136,8 @@ public class VehicleFormController {
     void updatebtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
         String vNo=txtvNo.getText();
         String VehicleDetails=txtVehicleDetails.getText();
-        VehicleDTO vehicle=new VehicleDTO(vNo,VehicleDetails);
-        boolean isUpdate =VehicleDAOimpl.updateVehicle(vehicle);
+
+        boolean isUpdate =vehicleDAOimpl.update(new VehicleDTO(vNo,VehicleDetails));
         if (isUpdate) {
             // System.out.println("Updated");
             new Alert(Alert.AlertType.CONFIRMATION, "Vehicle Details Updated!").show();
@@ -157,7 +155,7 @@ public class VehicleFormController {
 
         String VehicleNo= txtvNo.getText();
         try {
-            VehicleDTO vehicle=VehicleModel.searchvehicle(VehicleNo);
+            VehicleDTO vehicle=vehicleDAOimpl.search(VehicleNo);
             if (vehicle != null) {
                 fillData(vehicle);
                 // System.out.println( "Fill");

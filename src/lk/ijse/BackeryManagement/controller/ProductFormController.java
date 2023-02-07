@@ -10,7 +10,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import lk.ijse.BackeryManagement.dao.ProductDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.impl.ProductDAOimpl;
+import lk.ijse.BackeryManagement.dao.custom.ProductDAO;
 import lk.ijse.BackeryManagement.db.DBConnection;
 import lk.ijse.BackeryManagement.dto.ProductDTO;
 import lk.ijse.BackeryManagement.util.Navigation;
@@ -56,8 +57,9 @@ public class ProductFormController {
     @FXML
     private JFXTextField txtSearch;
     private String searchText = "";
-
-    public void initialize(){
+    ProductDTO product = new ProductDTO();
+    ProductDAO productDAOimpl=new ProductDAOimpl();
+    public void initialize() {
         colProductId.setCellValueFactory(new PropertyValueFactory<>("Prid"));
         ColProductName.setCellValueFactory(new PropertyValueFactory<>("ProductName"));
         colUnitPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
@@ -66,30 +68,31 @@ public class ProductFormController {
         tableView(searchText);
 
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-            searchText=newValue;
+            searchText = newValue;
             tableView(searchText);
         });
 
     }
-    private void tableView(String text){
+
+    private void tableView(String text) {
         String searchText = "%" + text + "%";
         try {
             ObservableList<ProductTm> tmList = FXCollections.observableArrayList();
 
             Connection connection = DBConnection.getInstance().getConnection();
-           // String sql = "SELECT * From product";
-                String sql = "SELECT * From product  WHERE  prId LIKE ?||product_name LIKE ?||unit_price LIKE ?|| Quantity LIKE ?";
+            // String sql = "SELECT * From product";
+            String sql = "SELECT * From product  WHERE  prId LIKE ?||product_name LIKE ?||unit_price LIKE ?|| Quantity LIKE ?";
 
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,searchText);
-            statement.setString(2,searchText);
-            statement.setString(3,searchText);
-            statement.setString(4,searchText);
+            statement.setString(1, searchText);
+            statement.setString(2, searchText);
+            statement.setString(3, searchText);
+            statement.setString(4, searchText);
 
             ResultSet set = statement.executeQuery();
 
-            while (set.next()){
-                ProductTm productTm=new ProductTm(
+            while (set.next()) {
+                ProductTm productTm = new ProductTm(
                         set.getString(1),
                         set.getString(2),
                         set.getDouble(3),
@@ -100,19 +103,18 @@ public class ProductFormController {
 
             tblProduct.setItems(tmList);
 
-        } catch (ClassNotFoundException | SQLException e)  {
+        } catch (ClassNotFoundException | SQLException e) {
             System.out.println(e);
         }
     }
 
     @FXML
     void addbtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
-        String prId=txtProductId.getText();
-        String productName=txtProductName.getText();
-        Double unitPrice= Double.valueOf(txtUnitPrice.getText());
-        int qty= Integer.parseInt(txtProductQuantity.getText());
-        ProductDTO product=new ProductDTO(prId,productName,unitPrice,qty);
-        boolean isAdded = ProductDAOimpl.addProduct(product);
+        String prId = txtProductId.getText();
+        String productName = txtProductName.getText();
+        Double unitPrice = Double.valueOf(txtUnitPrice.getText());
+        int qty = Integer.parseInt(txtProductQuantity.getText());
+        boolean isAdded = productDAOimpl.add(new ProductDTO(prId, productName, unitPrice, qty));
         tableView(searchText);
         if (isAdded) {
             clearFields();
@@ -122,8 +124,8 @@ public class ProductFormController {
         }
 
 
-
     }
+
     private void clearFields() {
         txtProductId.clear();
         txtProductName.clear();
@@ -133,21 +135,20 @@ public class ProductFormController {
 
     @FXML
     void backbtnOnAction(ActionEvent event) throws IOException {
-        Navigation.navigate(Routes.SUMMARYFORM,pane);
+        Navigation.navigate(Routes.SUMMARYFORM, pane);
     }
 
     @FXML
     void deletebtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
         String prId = txtProductId.getText();
-        ProductDTO product=new ProductDTO();
 
         product.setPrid(prId);
-        boolean isDeleted = ProductDAOimpl.deleteProduct(product);
+        boolean isDeleted = productDAOimpl.delete(prId);
         tableView(searchText);
         if (isDeleted) {
             // System.out.println("Deleted");
             new Alert(Alert.AlertType.CONFIRMATION, "Product Deleted!").show();
-        }else{
+        } else {
             //System.out.println("Somthing Happend");
             new Alert(Alert.AlertType.WARNING, "Something happened!").show();
         }
@@ -161,22 +162,21 @@ public class ProductFormController {
 
     @FXML
     void updatebtnOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
-        String prId =txtProductId.getText();
-        String productName=txtProductName.getText();
-        Double UnitPrice= Double.valueOf(String.valueOf(txtUnitPrice.getText()));
-        int qty= Integer.parseInt(String.valueOf(txtProductQuantity.getText()));
+        String prId = txtProductId.getText();
+        String productName = txtProductName.getText();
+        Double UnitPrice = Double.valueOf(String.valueOf(txtUnitPrice.getText()));
+        int qty = Integer.parseInt(String.valueOf(txtProductQuantity.getText()));
 
 
 
-        ProductDTO product=new ProductDTO(prId,productName, UnitPrice,qty);
-        boolean isUpdate = ProductDAOimpl.updateProduct(product);
+        boolean isUpdate = productDAOimpl.update(new ProductDTO(prId, productName, UnitPrice, qty));
 
 
         if (isUpdate) {
             // System.out.println("Updated");
             new Alert(Alert.AlertType.CONFIRMATION, "Product Details Updated!").show();
 
-        }else{
+        } else {
             // System.out.println("Not");
             new Alert(Alert.AlertType.WARNING, "Something happened!").show();
 
@@ -185,11 +185,12 @@ public class ProductFormController {
         clearFields();
 
     }
+
     @FXML
     void txtprIdOnAction(ActionEvent event) {
         String prId = txtProductId.getText();
         try {
-            ProductDTO product= ProductDAOimpl.search(prId);
+             product = productDAOimpl.search(prId);
             if (product != null) {
                 fillData(product);
                 // System.out.println( "Fill");

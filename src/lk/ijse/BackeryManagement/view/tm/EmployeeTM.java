@@ -9,8 +9,6 @@ public class EmployeeTM {
      private String Position;
      private Double BasicSalary;
 
-    public EmployeeTM() {
-    }
 
     public EmployeeTM(String nic, String name, String address, String licenceNo, int contact, String position, Double basicSalary) {
         Nic = nic;

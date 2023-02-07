@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class Navigation {
     private static AnchorPane pane;
-    public static void navigate(Routes routes,AnchorPane pane) throws IOException {
+    public static void navigate(Routes routes, AnchorPane pane) throws IOException {
         Navigation.pane=pane;
         Navigation.pane.getChildren().clear();
         Stage window = (Stage) Navigation.pane.getScene().getWindow();
